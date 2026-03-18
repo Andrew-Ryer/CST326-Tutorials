@@ -1,14 +1,45 @@
+using System;
 using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 
 public class myPlayer : MonoBehaviour
 {
+    public static myPlayer Instance { get; private set; }
+    
+    public event EventHandler<OnSelectedCounterChangedEventArgs> OnSelectedCounterChanged;
+    public class OnSelectedCounterChangedEventArgs : EventArgs
+    {
+        public myClearCounter selectedCounter;
+    }
+    
     [SerializeField] private float moveSpeed = 7f;
     [SerializeField] private myGameInput gameInput;
     [SerializeField] private LayerMask countersLayerMask;
     
     private bool isWalking;
     private Vector3 lastInteractDir;
+    private myClearCounter selectedCounter;
+
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Debug.LogError("There is more than one Player instance");
+        }
+        Instance = this;
+    }
+    private void Start()
+    {
+        gameInput.OnInteractAction += GameInput_OnInteractAction;
+    }
+
+    private void GameInput_OnInteractAction(object sender, System.EventArgs e)
+    {
+        if (selectedCounter != null)
+        {
+            selectedCounter.Interact();
+        }
+    }
     
     private void Update()
     {
@@ -38,8 +69,21 @@ public class myPlayer : MonoBehaviour
             if (raycastHit.transform.TryGetComponent(out myClearCounter clearCounter))
             {
                 // Has myClearCounter
-                clearCounter.Interact();
+                //clearCounter.Interact();
+                if (clearCounter != selectedCounter)
+                {
+                    SetSelectedCounter(clearCounter);
+                }
             }
+            else
+            {
+                SetSelectedCounter(null);
+                
+            }
+        }
+        else
+        {
+            SetSelectedCounter(null);
         }
     }
     
@@ -95,5 +139,15 @@ public class myPlayer : MonoBehaviour
         isWalking = moveDir != Vector3.zero;
         float rotateSpeed = 10f;
         transform.forward = Vector3.Slerp(transform.forward, moveDir, Time.deltaTime * rotateSpeed);
+    }
+
+    private void SetSelectedCounter(myClearCounter selectedCounter)
+    {
+        this.selectedCounter = selectedCounter;
+        
+        OnSelectedCounterChanged?.Invoke(this, new OnSelectedCounterChangedEventArgs
+        {
+            selectedCounter = selectedCounter
+        });
     }
 }
