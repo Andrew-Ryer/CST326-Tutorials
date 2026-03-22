@@ -1,37 +1,40 @@
 using UnityEngine;
 
-public class myKitchenObject : MonoBehaviour
+namespace myScripts
 {
-    [SerializeField] private myKitchenObjectSO kitchenObjectSO;
+    public class myKitchenObject : MonoBehaviour
+    {
+        [SerializeField] private myKitchenObjectSO kitchenObjectSO;
     
-    private myClearCounter clearCounter;
+        private ImyKitchenObjectParent kitchenObjectParent;
     
-    public myKitchenObjectSO GetKitchenObjectSO()
-    {
-        return kitchenObjectSO;
-    }
-
-    public void SetClearCounter(myClearCounter clearCounter)
-    {
-        if (this.clearCounter != null)
+        public myKitchenObjectSO GetKitchenObjectSO()
         {
-            this.clearCounter.ClearKitchenObject();
+            return kitchenObjectSO;
         }
-        
-        this.clearCounter = clearCounter;
 
-        if (clearCounter.HasKitchenObject())
+        public void SetKitchenObjectParent(ImyKitchenObjectParent kitchenObjectParent)
         {
-            Debug.LogError("Counter already has a KitchenObject!");
-        }
-        clearCounter.SetKitchenObject(this);
+            if (this.kitchenObjectParent != null)
+            {
+                this.kitchenObjectParent.ClearKitchenObject();
+            }
         
-        transform.parent = clearCounter.GetKitchenObjectFollowTransform();
-        transform.localPosition = Vector3.zero;
-    }
+            this.kitchenObjectParent = kitchenObjectParent;
 
-    public myClearCounter GetClearCounter()
-    {
-        return clearCounter;
+            if (kitchenObjectParent.HasKitchenObject())
+            {
+                Debug.LogError("IKitchenObjectParent already has a KitchenObject!");
+            }
+            kitchenObjectParent.SetKitchenObject(this);
+        
+            transform.parent = kitchenObjectParent.GetKitchenObjectFollowTransform();
+            transform.localPosition = Vector3.zero;
+        }
+
+        public ImyKitchenObjectParent GetKitchenObjectParent()
+        {
+            return kitchenObjectParent;
+        }
     }
 }

@@ -1,34 +1,43 @@
 using UnityEngine;
 
-public class mySelectedCounterVisual : MonoBehaviour
+namespace myScripts
 {
-    [SerializeField] private myClearCounter clearCounter;
-    [SerializeField] private GameObject visualGameObject;
+    public class mySelectedCounterVisual : MonoBehaviour
+    {
+        [SerializeField] private myBaseCounter baseCounter;
+        [SerializeField] private GameObject[] visualGameObjectArray;
     
-    private void Start()
-    {
-        myPlayer.Instance.OnSelectedCounterChanged += Player_OnSelectedCounterChanged;
-    }
-
-    private void Player_OnSelectedCounterChanged(object sender, myPlayer.OnSelectedCounterChangedEventArgs e)
-    {
-        if (e.selectedCounter == clearCounter)
+        private void Start()
         {
-            Show();
+            myPlayer.Instance.OnSelectedCounterChanged += Player_OnSelectedCounterChanged;
         }
-        else
+
+        private void Player_OnSelectedCounterChanged(object sender, myPlayer.OnSelectedCounterChangedEventArgs e)
         {
-            Hide();
+            if (e.selectedCounter == baseCounter)
+            {
+                Show();
+            }
+            else
+            {
+                Hide();
+            }
         }
-    }
 
-    private void Show()
-    {
-        visualGameObject.SetActive(true);
-    }
+        private void Show()
+        {
+            foreach (GameObject visualGameObject in visualGameObjectArray)
+            {
+                visualGameObject.SetActive(true);
+            }
+        }
 
-    private void Hide()
-    {
-        visualGameObject.SetActive(false);
+        private void Hide()
+        {
+            foreach (GameObject visualGameObject in visualGameObjectArray)
+            {
+                visualGameObject.SetActive(false);
+            }
+        }
     }
 }
