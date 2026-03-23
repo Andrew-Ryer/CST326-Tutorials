@@ -13,6 +13,11 @@ namespace myScripts
             Debug.LogError("BaseCounter.Interact();");
         }
         
+        public virtual void InteractAlternate(myPlayer player)
+        {
+            Debug.LogError("BaseCounter.InteractAlternate();");
+        }
+        
         public Transform GetKitchenObjectFollowTransform()
         {
             return counterTopPoint;

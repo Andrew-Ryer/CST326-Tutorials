@@ -36,5 +36,24 @@ namespace myScripts
         {
             return kitchenObjectParent;
         }
+
+        public void DestroySelf()
+        {
+            kitchenObjectParent.ClearKitchenObject();
+            
+            Destroy(gameObject);
+        }
+
+        public static myKitchenObject SpawnKitchenObject(myKitchenObjectSO kitchenObjectSO,
+            ImyKitchenObjectParent kitchenObjectParent)
+        {
+            Transform kitchenObjectTransform = Instantiate(kitchenObjectSO.prefab);
+            
+            myKitchenObject kitchenObject = kitchenObjectTransform.GetComponent<myKitchenObject>();
+            
+            kitchenObject.SetKitchenObjectParent(kitchenObjectParent);
+
+            return kitchenObject;
+        }
     }
 }

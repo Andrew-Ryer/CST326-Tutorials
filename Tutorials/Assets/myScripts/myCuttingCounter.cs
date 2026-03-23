@@ -2,9 +2,9 @@ using UnityEngine;
 
 namespace myScripts
 {
-    public class myClearCounter : myBaseCounter
+    public class myCuttingCounter : myBaseCounter
     {
-        [SerializeField] private myKitchenObjectSO kitchenObjectSo;
+        [SerializeField] private myKitchenObjectSO cutKitchenObjectSo;
     
         public override void Interact(myPlayer player)
         {
@@ -35,5 +35,17 @@ namespace myScripts
                 }
             }
         }
+
+        public override void InteractAlternate(myPlayer player)
+        {
+            if (HasKitchenObject())
+            {
+                // There is a KitchenObject here
+                GetKitchenObject().DestroySelf();
+                
+                myKitchenObject.SpawnKitchenObject(cutKitchenObjectSo, this);
+            }
+        }
+        
     }
 }
