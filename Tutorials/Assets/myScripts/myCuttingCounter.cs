@@ -1,10 +1,22 @@
+using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace myScripts
 {
     public class myCuttingCounter : myBaseCounter
     {
-        [SerializeField] private myKitchenObjectSO cutKitchenObjectSo;
+        public event EventHandler<OnProgressChangedEventArgs> OnProgressChanged;
+        public class OnProgressChangedEventArgs : EventArgs
+        {
+            public float progressNormalized;
+        }
+
+        public event EventHandler OnCut;
+        
+        [SerializeField] private myCuttingRecipeSO[] cuttingRecipeSOArray;
+
+        private int cuttingProgress;
     
         public override void Interact(myPlayer player)
         {
@@ -14,7 +26,19 @@ namespace myScripts
                 if (player.HasKitchenObject())
                 {
                     // Player is carrying something
-                    player.GetKitchenObject().SetKitchenObjectParent(this);
+                    if (HasRecipeWithInput(player.GetKitchenObject().GetKitchenObjectSO()))
+                    {
+                        // Player carrying something that can be cut
+                        player.GetKitchenObject().SetKitchenObjectParent(this);
+                        cuttingProgress = 0;
+                        
+                        myCuttingRecipeSO cuttingRecipeSo = GetCuttingRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
+
+                        OnProgressChanged?.Invoke(this, new OnProgressChangedEventArgs
+                        {
+                            progressNormalized = (float) cuttingProgress / cuttingRecipeSo.cuttingProgressMax
+                        });
+                    }
                 }
                 else
                 {
@@ -38,13 +62,60 @@ namespace myScripts
 
         public override void InteractAlternate(myPlayer player)
         {
-            if (HasKitchenObject())
+            if (HasKitchenObject() && HasRecipeWithInput(GetKitchenObject().GetKitchenObjectSO()))
             {
-                // There is a KitchenObject here
-                GetKitchenObject().DestroySelf();
+                // There is a KitchenObject here AND it can be cut
+                cuttingProgress++;
                 
-                myKitchenObject.SpawnKitchenObject(cutKitchenObjectSo, this);
+                OnCut?.Invoke(this, EventArgs.Empty);
+                
+                myCuttingRecipeSO cuttingRecipeSo = GetCuttingRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
+
+                OnProgressChanged?.Invoke(this, new OnProgressChangedEventArgs
+                {
+                    progressNormalized = (float) cuttingProgress / cuttingRecipeSo.cuttingProgressMax
+                });
+                
+                if (cuttingProgress >= cuttingRecipeSo.cuttingProgressMax)
+                {
+                    myKitchenObjectSO outputKitchenObjectSO = GetOutputForInput(GetKitchenObject().GetKitchenObjectSO());
+                
+                    GetKitchenObject().DestroySelf();
+                
+                    myKitchenObject.SpawnKitchenObject(outputKitchenObjectSO, this);
+                }
             }
+        }
+
+        private bool HasRecipeWithInput(myKitchenObjectSO inputKitchenObjectSO)
+        {
+            myCuttingRecipeSO cuttingRecipeSo = GetCuttingRecipeSOWithInput(inputKitchenObjectSO);
+            return cuttingRecipeSo != null;
+        }
+
+        private myKitchenObjectSO GetOutputForInput(myKitchenObjectSO inputKitchenObjectSO)
+        {
+            myCuttingRecipeSO cuttingRecipeSo = GetCuttingRecipeSOWithInput(inputKitchenObjectSO);
+            if (cuttingRecipeSo != null)
+            {
+                return cuttingRecipeSo.output;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        private myCuttingRecipeSO GetCuttingRecipeSOWithInput(myKitchenObjectSO inputKitchenObjectSO)
+        {
+            foreach (myCuttingRecipeSO cuttingRecipeSo in cuttingRecipeSOArray)
+            {
+                if (cuttingRecipeSo.input == inputKitchenObjectSO)
+                {
+                    return cuttingRecipeSo;
+                }
+            }
+            return null;
         }
         
     }
