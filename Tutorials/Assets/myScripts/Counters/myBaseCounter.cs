@@ -15,7 +15,7 @@ namespace myScripts
         
         public virtual void InteractAlternate(myPlayer player)
         {
-            Debug.LogError("BaseCounter.InteractAlternate();");
+            //Debug.LogError("BaseCounter.InteractAlternate();");
         }
         
         public Transform GetKitchenObjectFollowTransform()
@@ -41,6 +41,11 @@ namespace myScripts
         public bool HasKitchenObject()
         {
             return kitchenObject != null;
+        }
+
+        public virtual void QueryTriggerInteraction(myPlayer player)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

@@ -4,13 +4,9 @@ using UnityEngine.EventSystems;
 
 namespace myScripts
 {
-    public class myCuttingCounter : myBaseCounter
+    public class myCuttingCounter : myBaseCounter, ImyHasProgress
     {
-        public event EventHandler<OnProgressChangedEventArgs> OnProgressChanged;
-        public class OnProgressChangedEventArgs : EventArgs
-        {
-            public float progressNormalized;
-        }
+        public event EventHandler<ImyHasProgress.OnProgressChangedEventArgs> OnProgressChanged;
 
         public event EventHandler OnCut;
         
@@ -34,7 +30,7 @@ namespace myScripts
                         
                         myCuttingRecipeSO cuttingRecipeSo = GetCuttingRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
 
-                        OnProgressChanged?.Invoke(this, new OnProgressChangedEventArgs
+                        OnProgressChanged?.Invoke(this, new ImyHasProgress.OnProgressChangedEventArgs
                         {
                             progressNormalized = (float) cuttingProgress / cuttingRecipeSo.cuttingProgressMax
                         });
@@ -71,7 +67,7 @@ namespace myScripts
                 
                 myCuttingRecipeSO cuttingRecipeSo = GetCuttingRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
 
-                OnProgressChanged?.Invoke(this, new OnProgressChangedEventArgs
+                OnProgressChanged?.Invoke(this, new ImyHasProgress.OnProgressChangedEventArgs
                 {
                     progressNormalized = (float) cuttingProgress / cuttingRecipeSo.cuttingProgressMax
                 });
