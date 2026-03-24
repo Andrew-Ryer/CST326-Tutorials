@@ -44,6 +44,20 @@ namespace myScripts
             Destroy(gameObject);
         }
 
+        public bool TryGetPlate(out myPlateKitchenObject PlateKitchenObject)
+        {
+            if (this is myPlateKitchenObject)
+            {
+                PlateKitchenObject = this as myPlateKitchenObject;
+                return true;
+            }
+            else
+            {
+                PlateKitchenObject = null;
+                return false;
+            }
+        }
+
         public static myKitchenObject SpawnKitchenObject(myKitchenObjectSO kitchenObjectSO,
             ImyKitchenObjectParent kitchenObjectParent)
         {

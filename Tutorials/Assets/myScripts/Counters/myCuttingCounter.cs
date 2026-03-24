@@ -47,6 +47,14 @@ namespace myScripts
                 if (player.HasKitchenObject())
                 {
                     // Player is carrying something
+                    if (player.GetKitchenObject().TryGetPlate(out myPlateKitchenObject plateKitchenObject))
+                    {
+                        // Player is holding a Plate
+                        if (plateKitchenObject.TryAddIngredient(GetKitchenObject().GetKitchenObjectSO()))
+                        {
+                            GetKitchenObject().DestroySelf();
+                        }
+                    }
                 }
                 else
                 {
