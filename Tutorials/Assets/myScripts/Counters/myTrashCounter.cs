@@ -1,13 +1,19 @@
+using System;
 using myScripts;
 using UnityEngine;
 
 public class myTrashCounter : myBaseCounter
 {
+
+    public static event EventHandler OnAnyObjectTrashed;
+    
     public override void Interact(myPlayer player)
     {
         if (player.HasKitchenObject())
         {
             player.GetKitchenObject().DestroySelf();
+            
+            OnAnyObjectTrashed?.Invoke(this, EventArgs.Empty);
         }
     }
 }

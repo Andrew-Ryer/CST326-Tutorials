@@ -7,6 +7,7 @@ namespace myScripts
     {
         public static myPlayer Instance { get; private set; }
     
+        public event EventHandler OnPickedSomething;
         public event EventHandler<OnSelectedCounterChangedEventArgs> OnSelectedCounterChanged;
         public class OnSelectedCounterChangedEventArgs : EventArgs
         {
@@ -172,6 +173,11 @@ namespace myScripts
         public void SetKitchenObject(myKitchenObject kitchenObject)
         {
             this.kitchenObject = kitchenObject;
+
+            if (kitchenObject != null)
+            {
+                OnPickedSomething?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         public myKitchenObject GetKitchenObject()

@@ -6,6 +6,8 @@ namespace myScripts
 {
     public class myCuttingCounter : myBaseCounter, ImyHasProgress
     {
+        public static event EventHandler OnAnyCut;
+        
         public event EventHandler<ImyHasProgress.OnProgressChangedEventArgs> OnProgressChanged;
 
         public event EventHandler OnCut;
@@ -72,6 +74,7 @@ namespace myScripts
                 cuttingProgress++;
                 
                 OnCut?.Invoke(this, EventArgs.Empty);
+                OnAnyCut?.Invoke(this, EventArgs.Empty);
                 
                 myCuttingRecipeSO cuttingRecipeSo = GetCuttingRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
 
