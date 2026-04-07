@@ -7,6 +7,11 @@ namespace myScripts
     public class myCuttingCounter : myBaseCounter, ImyHasProgress
     {
         public static event EventHandler OnAnyCut;
+
+        new public static void ResetStaticData()
+        {
+            OnAnyCut = null;
+        }
         
         public event EventHandler<ImyHasProgress.OnProgressChangedEventArgs> OnProgressChanged;
 
