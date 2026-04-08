@@ -226,4 +226,8 @@ public class myStoveCounter : myBaseCounter, ImyHasProgress
         }
         return null;
     }
+    
+    public bool IsFried() {
+        return state == State.Fried;
+    }
 }
